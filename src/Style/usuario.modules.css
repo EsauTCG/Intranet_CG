@@ -1,0 +1,63 @@
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background-color: #1a1a1a;
+  border-bottom: 1px solid #ccc;
+  transition: all 0.3s ease-in-out;
+  flex-wrap: wrap;
+}
+
+.user-header-left {
+  flex: 1;
+  min-width: 250px;
+}
+
+.user-header-right {
+  flex: 1;
+  min-width: 250px;
+  text-align: right;
+}
+
+.saludo {
+  font-size: 2rem;
+  color: #fffefe;
+  margin-bottom: 0.5rem;
+  font-family: Helvetica Neue World 75 Bold;
+}
+
+.motivacion {
+  font-size: 1.1rem;
+  color: #ffffff;
+  font-style: italic;
+  font-family: Helvetica Neue World 75 Bold;
+}
+
+.login-placeholder {
+  padding: 0.5rem 1rem;
+  background-color: #e8e4e4;
+  border: none;
+  border-radius: 12px;
+  opacity: 0.9;
+  text-decoration: none;
+  color: #1e1e1e;
+}
+
+.login-placeholder:hover {
+  background-color: #dd6262;
+  color: #fff;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.user-profile {
+  align-items: center;
+  gap: 8px;
+  color: #c0bfbf;
+  font-weight: 500;
+}
+
+.user-name {
+  font-size: 14px;
+  color: #ffffff;
+}

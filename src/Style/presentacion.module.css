@@ -1,0 +1,22 @@
+.presentacion{
+    font-family: Golos Text;
+    color: rgb(30, 29, 29);
+    font-size: 20px;
+    padding-left: 8px;
+    padding-right: 8px;
+    text-align: center;
+    justify-content: center;
+
+}
+
+.exp{
+    font-family: Golos Text;
+    color: rgb(255, 0, 0);
+    font-style:inherit;
+
+}
+
+.texto{
+    font-family: Poppins Regular;
+    
+}

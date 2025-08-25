@@ -1,0 +1,14 @@
+.cumple-header {
+  background: linear-gradient(135deg, #d1b3b3, #eb0606);
+  padding: 2rem;
+  border-bottom: 1px solid #c0c1c5;
+  transition: margin-left 0.3s;
+  color: #f4f0f0;
+  bottom: 0;
+  text-align: center;
+}
+
+.motivaciones{
+  color: rgb(255, 255, 255);
+  font-size: 18px;
+}

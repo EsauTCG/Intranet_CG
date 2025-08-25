@@ -1,0 +1,13 @@
+.layout {
+  display: flex;
+}
+
+.main-content {
+  flex: 1;
+  transition: margin-left 0.3s;
+  margin-left: 250px;
+}
+
+.main-content.collapsed {
+  margin-left: 70px;
+}

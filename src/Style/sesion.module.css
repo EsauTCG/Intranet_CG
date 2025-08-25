@@ -1,0 +1,336 @@
+.loginWrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1c1c1c, #2e2e2e);
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.loginWrapper::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(178, 34, 34, 0.1) 0%, transparent 70%);
+  animation: rotate 20s linear infinite;
+  z-index: 0;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem;
+  border-radius: 20px;
+  background: rgba(28, 28, 28, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 8px 32px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(255,255,255,0.1);
+  text-align: center;
+  color: #f5f5f5;
+  animation: fadeIn 1.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+.brandContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.brandIcon {
+  color: #b22222;
+  filter: drop-shadow(0 0 10px rgba(178, 34, 34, 0.5));
+}
+
+.title {
+  font-size: 2rem;
+  margin: 0;
+  font-weight: 800;
+  color: #b22222;
+  text-shadow: 0 0 20px rgba(178, 34, 34, 0.5);
+}
+
+.subtitle {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 12px;
+  color: rgba(245, 245, 245, 0.6);
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 14px 14px 45px;
+  border: none;
+  border-radius: 12px;
+  outline: none;
+  background: rgba(46, 46, 46, 0.8);
+  color: #f5f5f5;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.input::placeholder {
+  color: rgba(245, 245, 245, 0.5);
+}
+
+.input:focus {
+  background: rgba(58, 58, 58, 0.9);
+  box-shadow: 
+    0 0 0 2px rgba(178, 34, 34, 0.3),
+    0 0 20px rgba(178, 34, 34, 0.2);
+  border: 1px solid #b22222;
+  transform: translateY(-1px);
+}
+
+.input:focus + .inputIcon,
+.inputContainer:hover .inputIcon {
+  color: #b22222;
+}
+
+.button {
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #b22222, #7a1c1c);
+  color: #fff;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(178, 34, 34, 0.3);
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.button:hover::before {
+  left: 100%;
+}
+
+.button:hover {
+  background: linear-gradient(135deg, #d32f2f, #b22222);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(178, 34, 34, 0.4);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.buttonIcon {
+  transition: transform 0.3s ease;
+}
+
+.button:hover .buttonIcon {
+  transform: translateX(2px);
+}
+
+.errorMessage {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #ff6b6b;
+  animation: shake 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.loadingContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1c1c1c, #2e2e2e);
+  color: #f5f5f5;
+}
+
+.loader {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top: 4px solid #b22222;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.loader::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid #b22222;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: spin 0.5s linear infinite reverse;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loadingText {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .loginWrapper {
+    padding: 0.5rem;
+  }
+  
+  .loginCard {
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+  }
+  
+  .title {
+    font-size: 1.75rem;
+  }
+  
+  .subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .input {
+    padding: 12px 12px 12px 40px;
+    font-size: 0.9rem;
+  }
+  
+  .inputIcon {
+    left: 10px;
+    width: 18px;
+    height: 18px;
+  }
+  
+  .button {
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .loginCard {
+    padding: 1.5rem 1rem;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
+  
+  .brandContainer {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .loginWrapper::before,
+  .loader,
+  .loader::after {
+    animation: none;
+  }
+  
+  .loginCard {
+    animation: none;
+  }
+  
+  .button,
+  .input {
+    transition: none;
+  }
+}

@@ -1,0 +1,12 @@
+.formContainer {
+  background-color: #f4f6f9;
+}
+
+.botonEnviar{
+    background-color: red !important;
+}
+
+.botonEnviar:hover{
+    background-color: darkred !important;
+    transform: translateY(-2px) !important;
+}
