@@ -7,7 +7,7 @@ import Home from './Pages/home';
 import Docs from './Pages/documentos';
 import Login from './Pages/login';
 import Denuncias from './Pages/denuncias';
-//import Vacantes from './Pages/vacantes';
+import Vacantes from './Pages/vacantes';
 // import Solicitudes from './Pages/solicitudes'; // Descomenta cuando la tengas
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -30,7 +30,7 @@ function App() {
           } 
         />
         
-      {/*
+      
         <Route 
           path='/vacantes' 
           element={
@@ -39,7 +39,7 @@ function App() {
             </ProtectedRoute>
           } 
         />
-        */}
+        
         
         {/* Descomentar cuando ya este la página de solicitudes */}
         {/* <Route 
