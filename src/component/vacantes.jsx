@@ -3,6 +3,10 @@ import Styles from "../Style/vacantes.module.css";
 import CEDIS from "../imgs/CEDIS.png";
 import Empaque from "../imgs/Empaque.png";
 import Pieles from "../imgs/Pieles.jpg";
+import MANTENIMIENTO from "../imgs/Mantenimiento.png";
+import RECEPCIONISTA from "../imgs/Recepcionista.jpg";
+import INTENDENCIA from "../imgs/INTENDENCIA.png";
+import SISTEMAS from "../imgs/SISTEMAS.jpg";
 
 const vacantesData = [
   {
@@ -26,6 +30,35 @@ const vacantesData = [
     imagen: CEDIS,
     detalles: "Experiencia en logística y manejo de inventarios. Conocimiento de sistemas de gestión de almacenes es un plus."
   },
+  {
+    id: 4,
+    titulo: "MANTENIMIENTO",
+    descripcion: "Realizar tareas de mantenimiento preventivo y correctivo.",
+    imagen: MANTENIMIENTO,
+    detalles: "Experiencia en mantenimiento industrial y conocimientos en sistemas mecánicos y eléctricos."
+  },
+  {
+    id: 5,
+    titulo: "RECEPCIONISTA",
+    descripcion: "Atender llamadas y recibir visitas.",
+    imagen: RECEPCIONISTA,
+    detalles: "Experiencia en atención al cliente y manejo de conmutador telefónico."
+  },
+  {
+    id: 6,
+    titulo: "INTENDENCIA",
+    descripcion: "Gestión de la limpieza y mantenimiento de las instalaciones.",
+    imagen: INTENDENCIA,
+    detalles: "Experiencia en limpieza industrial y manejo de productos químicos."
+  },
+  {
+    id: 7,
+    titulo: "SISTEMAS",
+    descripcion: "Desarrollo y mantenimiento de sistemas informáticos.",
+    imagen: SISTEMAS,
+    detalles: "Experiencia en desarrollo de software y manejo de bases de datos. Conocimiento de metodologías ágiles es un plus."
+  },
+  
 ];
 
 export default function Vacantes() {
@@ -70,7 +103,7 @@ export default function Vacantes() {
 
       {/* Modal */}
       {open && (
-        <div className={Styles.modaloverlay} onClick={handleClose}>
+         <div className={`${Styles.modaloverlay} ${!open ? Styles.hidden : ""}`} onClick={handleClose}>
           <div
             className={Styles.modalcontent}
             onClick={(e) => e.stopPropagation()} // evitar cerrar al hacer click dentro

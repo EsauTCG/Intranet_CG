@@ -4,7 +4,6 @@ import UserHeader from '../component/usuario';
 import Cumple from '../component/cumple';
 import Footer from '../component/footer';
 import Vacantes from '../component/vacantes';
-import '../Style/home.modules.css';
 
 function Home() {
   const [collapsed, setCollapsed] = useState(false);

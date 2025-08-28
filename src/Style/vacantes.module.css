@@ -1,81 +1,56 @@
-/* ===== Contenedor principal ===== */
 .vacantescontainer {
   width: 100%;
-  padding: 20px 20px;
-  background: #f4f6f8;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 20px;
   box-sizing: border-box;
 }
 
-/* ===== Encabezado ===== */
+/* Encabezado */
 .header {
   text-align: center;
-  margin-bottom: 40px;
-  width: 100%;
+  margin-bottom: 30px;
 }
 
 .header h1 {
-  font-size: 2.2rem;
-  color: #2c3e50;
+  font-size: 2rem;
   margin-bottom: 10px;
-  font-weight: 700;
-  position: relative;
-  display: inline-block;
-}
-
-.header h1::after {
-  content: "";
-  display: block;
-  height: 4px;
-  width: 70%;
-  margin: 8px auto 0;
-  background: linear-gradient(90deg, #007bff, #00c6ff);
-  border-radius: 2px;
 }
 
 .header p {
   font-size: 1rem;
-  color: #555;
-  margin: 0;
+  color: #666;
 }
 
-/* ===== Grid responsivo ===== */
+/* Grid responsivo */
 .vacantesgrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  width: 100%;
-  max-width: 1200px;
-  box-sizing: border-box;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
 }
 
-/* ===== Tarjetas ===== */
+/* Tarjeta */
 .vacantecard {
   background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  border: 1px solid #ddd;
+  border-radius: 10px;
   overflow: hidden;
+  text-align: center;
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.vacantecard:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.18);
 }
 
 .vacantecard img {
   width: 100%;
-  height: 220px;
+  height: 180px;
   object-fit: cover;
+}
+
+.vacantecard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
 .cardcontent {
   padding: 20px;
+  text-align: center;
 }
 
 .cardcontent h3 {
@@ -90,7 +65,6 @@
   color: #555;
 }
 
-/* ===== Modal ===== */
 .modaloverlay {
   position: fixed;
   inset: 0;
@@ -104,10 +78,15 @@
   box-sizing: border-box;
 }
 
+/* Cuando está oculto */
+.hidden {
+  display: none !important;
+}
+
 .modalcontent {
   background: #fff;
   border-radius: 18px;
-  max-width: 800px;
+  max-width: 700px;
   width: 100%;
   padding: 32px;
   position: relative;
@@ -116,30 +95,16 @@
   box-sizing: border-box;
 }
 
-.modalimg {
-  width: 100%;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  max-height: 350px;
-  object-fit: cover;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.modalcontent h2 {
-  margin: 0 0 16px;
-  font-size: 2rem;
-  color: #1a202c;
-  text-align: center;
+@keyframes slideUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
-.modalcontent p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #444;
-  margin-bottom: 14px;
-  text-align: center;
-}
-
-/* Botón de cerrar */
 .closebtn {
   position: absolute;
   top: 14px;
@@ -159,38 +124,25 @@
   background: #ddd;
 }
 
-/* ===== Animaciones ===== */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.modalimg {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  max-height: 350px;
+  object-fit: cover;
 }
 
-@keyframes slideUp {
-  from { transform: translateY(50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.modalcontent h2 {
+  margin: 0 0 16px;
+  font-size: 2rem;
+  color: #1a202c;
+  text-align: center;
 }
 
-/* ===== Media queries ===== */
-@media (max-width: 768px) {
-  .header h1 {
-    font-size: 1.8rem;
-  }
-  .cardcontent h3 {
-    font-size: 1.2rem;
-  }
-  .modalcontent {
-    padding: 20px;
-  }
-}
-
-@media (max-width: 480px) {
-  .header h1 {
-    font-size: 1.6rem;
-  }
-  .header p {
-    font-size: 0.9rem;
-  }
-  .cardcontent p {
-    font-size: 0.9rem;
-  }
+.modalcontent p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 14px;
+  text-align: center;
 }
