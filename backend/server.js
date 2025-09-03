@@ -70,16 +70,26 @@ const adConfig = {
 const ad = new ActiveDirectory(adConfig);
 
 app.post('/api/auth/login', express.json(), (req, res) => {
-  const { usuario, password } = req.body;
+   const { usuario: rawUsuario, password } = req.body;
 
-  if (!usuario || !password) {
+  if (!rawUsuario || !password) {
     return res.status(400).json({ message: 'Usuario y contraseña requeridos' });
   }
 
-  console.log("🧪 Intentando autenticar en AD:", usuario);
+  const usuarioADAuth = rawUsuario;
+
+  let usuarioAD = rawUsuario;
+  if (usuarioAD.includes("\\")) {
+    usuarioAD = usuarioAD.split("\\")[1];
+  } else if (usuarioAD.includes("@")) {
+    usuarioAD = usuarioAD.split("@")[0];
+  }
+
+  console.log("🧪 Autenticando en AD con:", usuarioADAuth);
+  console.log("🔍 Normalizado para BD (sAMAccountName):", usuarioAD);
 
 
-  ad.authenticate(usuario, password, (err, auth) => {
+  ad.authenticate(usuarioADAuth, password, (err, auth) => {
     if (err) {
       console.error('❌ Error en autenticación AD:', err.message);
       return res.status(500).json({ message: 'Error en autenticación AD', debug: err.message });
@@ -89,7 +99,7 @@ app.post('/api/auth/login', express.json(), (req, res) => {
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
 
-    console.log(`✅ Usuario autenticado en AD: ${usuario}`);
+    console.log(`✅ Usuario autenticado en AD: ${usuarioADAuth}`);
 
     // Aquí validamos si existe en tu BD
     const connection = new Connection(dbConfig);
@@ -106,7 +116,7 @@ app.post('/api/auth/login', express.json(), (req, res) => {
           FROM Usuarios u
           LEFT JOIN Roles r ON u.IdRol = r.IdRol
           LEFT JOIN Areas a ON u.IdArea = a.IdArea
-          WHERE LOWER(u.Nombre) = LOWER(@nombre)
+          WHERE LOWER(u.UsuarioAD) = LOWER(@usuarioAD)
         `;
 
       let user = null;
@@ -119,7 +129,7 @@ app.post('/api/auth/login', express.json(), (req, res) => {
         }
 
         if (!user) {
-          console.log("🔍 Comparando en BD con usuarioAD:", usuario);
+          console.log("🔍 Comparando en BD con usuarioAD:", usuarioAD);
           return res.status(403).json({ message: "Usuario no registrado en sistema" });
         }
 
@@ -148,8 +158,8 @@ app.post('/api/auth/login', express.json(), (req, res) => {
         });
       });
 
-      request.addParameter('nombre', TYPES.VarChar, usuario);
-      console.log("🔍 Comparando en BD con nombre:", usuario);
+      request.addParameter('usuarioAD', TYPES.VarChar, usuarioAD);
+      console.log("🔍 Comparando en BD con nombre:", usuarioAD);
       connection.execSql(request);
     });
 

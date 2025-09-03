@@ -89,7 +89,7 @@ const Login = () => {
             <User size={20} className={styles.inputIcon} />
             <input
               type="text"
-              placeholder="Nombre Completo"
+              placeholder="Correo Empresarial"
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
               required
