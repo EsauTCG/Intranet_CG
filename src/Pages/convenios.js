@@ -3,9 +3,9 @@ import Sidebar from '../component/sidebar';
 import UserHeader from '../component/usuario';
 import Cumple from '../component/cumple';
 import Footer from '../component/footer';
-import Vacantes from '../component/vacantes';
+import Conveni from '../component/convenios'; 
 
-function Vacante() {
+function Convenio() {
   const [collapsed, setCollapsed] = useState(false);
 
   // 2 - Codigo
@@ -31,7 +31,7 @@ function Vacante() {
         <UserHeader collapsed={collapsed} />
         <br/>
         <br/>
-        <Vacantes collapsed={collapsed}/>
+        <Conveni collapsed={collapsed}/>
         <Cumple collapsed={collapsed} />
         <Footer collapsed={collapsed}/>
       </div>
@@ -39,4 +39,4 @@ function Vacante() {
   );
 }
 
-export default Vacante;
+export default Convenio;

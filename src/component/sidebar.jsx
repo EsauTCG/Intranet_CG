@@ -1,4 +1,4 @@
-import { Home, FileText, LogOut, Menu, HatGlasses, Handshake, IdCardLanyard } from "lucide-react";
+import { Home, FileText, LogOut, Menu, HatGlasses, Handshake, IdCardLanyard, NotebookPen } from "lucide-react";
 import "../Style/sidebar.modules.css";
 import Carnes from "../imgs/Carnes G.png";
 import { NavLink } from "react-router-dom";
@@ -14,12 +14,15 @@ export default function Sidebar({ collapsed, setCollapsed }) {
   const navItems = [
     { icon: <Home size={20} />, label: "Inicio", link: "/" },
     { icon: <FileText size={20} />, label: "Documentos", link: "/documentos" },
+    { icon: <Handshake size={20} />, label: "Convenios", link: "/convenios" },
+    
+    
   ];
 
   // Enlaces protegidos
   const privateItems = [
     { icon: <HatGlasses size={20} />, label: "Denuncias", link: "/denuncias" },
-    { icon: <Handshake size={20} />, label: "Mis Solicitudes", link: "/solicitudes" },
+    { icon: <NotebookPen size={20} />, label: "Mis Solicitudes", link: "/solicitudes" },
     { icon: <IdCardLanyard size={20} />, label: "Vacantes", link: "/vacantes" }
 
   ];

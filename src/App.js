@@ -8,6 +8,8 @@ import Docs from './Pages/documentos';
 import Login from './Pages/login';
 import Denuncias from './Pages/denuncias';
 import Vacantes from './Pages/vacantes';
+import Convenios from './Pages/convenios';
+
 // import Solicitudes from './Pages/solicitudes'; // Descomenta cuando la tengas
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -19,6 +21,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/documentos' element={<Docs />} />
         <Route path='/login' element={<Login />} />
+        <Route path='/convenios' element={<Convenios />} />
         
         {/* Rutas protegidas */}
         <Route 
