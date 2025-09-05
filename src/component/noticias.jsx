@@ -1,35 +1,50 @@
-import Banner from "../imgs/Banner1.png";
-import Banner2 from "../imgs/Banner2.png";
-import Banner3 from "../imgs/Banner3.png";
-import Banner4 from "../imgs/Banner4.jpg";
-import Banner5 from "../imgs/Banner5.jpg";
+import { useEffect, useState } from "react";
 
-const slides = [
-  {
-    image: Banner,
-    title: "Utiles Escolares",
-    text: "No pierdas la oportunidad de entrar a la convocatoria",
-  },
-  {
-    image: Banner2,
-    title: "Aprovecha los Convenios",
-    text: "Utliza los convenios que tenemos para ti",
-  },
-  {
-    image: Banner3,
-    title: "Becas de Carnes G",
-    text: "Aplica a las becas de Carnes G",
-  },
-  {
-    image: Banner4,
-    title: "Encuesta de Satisfaccion Laboral de Carnes G",
-    text: "Participa en la encuesta de satisfaccion laboral",
-  },
-  {
-    image: Banner5,
-    title: "Con Amor para los Abuelos",
-    text: "Apoya a los abuelos del asilo con tu donativo",
-  },
-];
+export default function CarouselDataFetcher() {
+  const [slides, setSlides] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-export default slides;
+  useEffect(() => {
+    fetch("http://localhost:5000/api/carousel")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Error al cargar slides');
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log('Slides recibidos:', data); // Para debug
+        setSlides(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error cargando carousel:", err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div>Cargando carousel...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (slides.length === 0) return <div>No hay slides disponibles</div>;
+
+  return (
+    <div className="carousel">
+      {slides.map((slide, i) => (
+        <div key={slide.Id || i} className="carousel-slide">
+          <img 
+            src={`http://localhost:5000${slide.Image}`} 
+            alt={slide.Title} 
+            onError={(e) => {
+              console.error('Error cargando imagen:', e.target.src);
+              e.target.style.display = 'none';
+            }}
+          />
+          <h3>{slide.Title}</h3>
+          <p>{slide.Text}</p>
+        </div>
+      ))}
+    </div>
+  );
+}

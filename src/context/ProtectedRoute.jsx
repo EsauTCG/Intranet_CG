@@ -2,8 +2,8 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context';
 
-const ProtectedRoute = ({ children }) => {
-  const { isLoggedIn, loading } = useAuth();
+const ProtectedRoute = ({ children, requiredRoles = [], requiredAreas = [] }) => {
+  const { isLoggedIn, loading, hasAccess } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -22,11 +22,14 @@ const ProtectedRoute = ({ children }) => {
 
   // Si no está logueado, redirigir al login
   if (!isLoggedIn) {
-    // Guardar la ubicación actual para redirigir después del login
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Si está logueado, mostrar el componente
+  if (!hasAccess(requiredRoles, requiredAreas)) {
+    return <Navigate to="/" replace />;
+  }
+
+  // Si pasa validaciones, renderiza el componente
   return children;
 };
 

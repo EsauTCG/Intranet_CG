@@ -9,6 +9,7 @@ import Login from './Pages/login';
 import Denuncias from './Pages/denuncias';
 import Vacantes from './Pages/vacantes';
 import Convenios from './Pages/convenios';
+import Altas from './Pages/altas';
 
 // import Solicitudes from './Pages/solicitudes'; // Descomenta cuando la tengas
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -42,7 +43,16 @@ function App() {
             </ProtectedRoute>
           } 
         />
-        
+
+        <Route
+          path="/altas"
+          element={
+            <ProtectedRoute requiredAreas={["Marketing", "RH"]}>
+              <Altas />
+            </ProtectedRoute>
+          }
+        />
+                
         
         {/* Descomentar cuando ya este la página de solicitudes */}
         {/* <Route 

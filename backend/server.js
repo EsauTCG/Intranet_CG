@@ -288,237 +288,6 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-// Ruta de prueba
-app.get("/api/test", (req, res) => {
-  console.log("🔍 Authorization:", req.get("Authorization") || "NO PRESENTE");
-  console.log("🍪 Cookies:", req.get("Cookie") || "NO COOKIES");
-  res.json({ ok: true, timestamp: new Date().toISOString() });
-});
-
-// 🔹 RUTA SSO MEJORADA
-app.get('/api/auth/ssologin',
-  (req, res, next) => {
-    console.log('\n🔍 === INICIO DE AUTENTICACIÓN SSO ===');
-    console.log('🕒 Timestamp:', new Date().toISOString());
-    console.log('🌐 User-Agent:', req.get('User-Agent'));
-    console.log('🔑 Authorization Header:', req.get('Authorization') || 'NO PRESENTE');
-    console.log('🍪 Cookies:', req.get('Cookie') || 'NO COOKIES');
-    console.log('🌍 Remote Address:', req.connection.remoteAddress);
-    console.log('🔗 Host:', req.get('Host'));
-    
-    // Headers específicos para autenticación Windows
-    res.setHeader("WWW-Authenticate", "Negotiate, NTLM");
-    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    res.setHeader("Pragma", "no-cache");
-    res.setHeader("Expires", "0");
-    
-    console.log('=====================================\n');
-    next();
-  },
-  
-  // Middleware de autenticación con manejo mejorado de errores
-  (req, res, next) => {
-    console.log('🔐 Iniciando autenticación Passport...');
-    
-    passport.authenticate('WindowsAuthentication', {
-      session: false,
-      failWithError: true
-    })(req, res, (err) => {
-      if (err) {
-        console.error('❌ Error en Passport authenticate:', err);
-        return next(err);
-      }
-      console.log('✅ Passport authenticate completado exitosamente');
-      next();
-    });
-  },
-  
-  // Handler de éxito
-  (req, res) => {
-    try {
-      console.log('🎉 Autenticación exitosa - procesando usuario...');
-      console.log('👤 Objeto user completo:', JSON.stringify(req.user, null, 2));
-
-      const usuarioAD = req.user.usuarioAD || 
-                       req.user._json?.sAMAccountName || 
-                       req.user.sAMAccountName ||
-                       req.user._json?.userPrincipalName?.split('@')[0];
-                       
-      console.log('👤 UsuarioAD extraído final:', usuarioAD);
-
-      if (!usuarioAD) {
-        console.error('❌ No se pudo extraer usuario de Active Directory');
-        console.log('🔍 Propiedades disponibles en req.user:', Object.keys(req.user));
-        console.log('🔍 req.user._json keys:', req.user._json ? Object.keys(req.user._json) : 'No _json');
-        
-        return res.status(500).json({
-          message: "Error: No se pudo obtener información del usuario desde AD",
-          debug: {
-            userKeys: Object.keys(req.user),
-            jsonKeys: req.user._json ? Object.keys(req.user._json) : null
-          }
-        });
-      }
-
-      // Conectar a la base de datos para validar usuario
-      const connection = new Connection(dbConfig);
-      
-      connection.on('connect', (err) => {
-        if (err) {
-          console.error('❌ Error conexión BD:', err.message);
-          return res.status(500).json({ 
-            message: "Error de conexión a la base de datos",
-            debug: err.message
-          });
-        }
-
-        console.log('🔍 Buscando usuario en BD:', usuarioAD);
-        
-        const sql = `
-          SELECT u.IdUsuario, u.Nombre, u.UsuarioAD, u.Activo,
-                 r.NombreRol as Rol, a.NombreArea as Area
-          FROM Usuarios u
-          LEFT JOIN Roles r ON u.IdRol = r.IdRol
-          LEFT JOIN Areas a ON u.IdArea = a.IdArea
-          WHERE LOWER(u.UsuarioAD) = LOWER(@usuarioAD)
-        `;
-
-        let user = null;
-        
-        const request = new Request(sql, (err, rowCount) => {
-          connection.close();
-
-          if (err) {
-            console.error('❌ Error consulta BD:', err.message);
-            return res.status(500).json({ 
-              message: "Error en consulta de base de datos",
-              debug: err.message
-            });
-          }
-          
-          console.log('📊 Filas encontradas en BD:', rowCount);
-          
-          if (!user) {
-            console.error('❌ Usuario no encontrado en BD:', usuarioAD);
-            return res.status(403).json({ 
-              message: `Usuario '${usuarioAD}' no está registrado en el sistema`,
-              help: "Contacte al administrador para que agregue su usuario a la base de datos"
-            });
-          }
-          
-          if (!user.Activo) {
-            console.error('❌ Usuario inactivo:', usuarioAD);
-            return res.status(403).json({ 
-              message: "Usuario inactivo. Contacte al administrador.",
-              usuario: usuarioAD
-            });
-          }
-
-          console.log('✅ Usuario encontrado y activo:', user.Nombre);
-
-          // Generar JWT
-          const token = jwt.sign(
-            { 
-              id: user.IdUsuario, 
-              rol: user.Rol || 'empleado', 
-              area: user.Area || 'general',
-              usuarioAD: user.UsuarioAD
-            },
-            SECRET_KEY,
-            { expiresIn: '8h' }
-          );
-
-          // Preparar datos del usuario para el frontend
-          const userData = {
-            id: user.IdUsuario,
-            nombre: user.Nombre,
-            usuarioAD: user.UsuarioAD,
-            rol: user.Rol ? user.Rol.toLowerCase().trim() : null,  // 👈 aquí llega "Administrador", "Sistemas"
-            area: user.Area ? user.Area.toLowerCase().trim() : null,
-            activo: user.Activo
-          };
-
-
-          console.log('🎫 Token generado exitosamente para:', user.Nombre);
-          console.log('📤 Enviando respuesta exitosa');
-          
-          res.json({ 
-            token, 
-            user: userData,
-            message: "Autenticación exitosa",
-            timestamp: new Date().toISOString()
-          });
-        });
-
-        request.on('row', (cols) => {
-          user = {};
-          cols.forEach(c => {
-            user[c.metadata.colName] = c.value;
-            console.log(`  - ${c.metadata.colName}: ${c.value}`);
-          });
-        });
-
-        request.addParameter('usuarioAD', TYPES.VarChar, usuarioAD);
-        connection.execSql(request);
-      });
-      
-      connection.connect();
-      
-    } catch (error) {
-      console.error('❌ Error inesperado en handler de éxito:', error);
-      res.status(500).json({
-        message: "Error interno del servidor",
-        debug: error.message
-      });
-    }
-  },
-
-  // Error handler mejorado
-  (err, req, res, next) => {
-    console.error('❌ Error en autenticación SSO completo:', err);
-    console.error('❌ Error stack:', err.stack);
-    
-    // Si ya se envió respuesta, no hacer nada
-    if (res.headersSent) {
-      return next(err);
-    }
-    
-    // Diferentes tipos de errores
-    if (err.message && (err.message.includes('LDAP') || err.message.includes('ldap'))) {
-      return res.status(500).json({
-        message: "Error de conexión con Active Directory",
-        help: "Contacte al administrador del sistema",
-        debug: process.env.NODE_ENV === 'development' ? err.message : undefined
-      });
-    }
-    
-    if (err.status === 401 || err.message?.includes('401') || err.message?.includes('Unauthorized')) {
-      return res.status(401).json({
-        message: "Credenciales requeridas o inválidas",
-        help: "Use sus credenciales de Windows del dominio",
-        action: "retry"
-      });
-    }
-    
-    // Error de credenciales
-    if (err.message?.includes('credentials') || err.message?.includes('password') || err.message?.includes('authentication')) {
-      return res.status(401).json({
-        message: "Usuario o contraseña incorrectos",
-        help: "Verifique sus credenciales de Windows",
-        action: "retry"
-      });
-    }
-    
-    // Error genérico
-    res.status(500).json({
-      message: "Error de autenticación",
-      help: "Intente nuevamente o contacte al administrador",
-      debug: process.env.NODE_ENV === 'development' ? err.message : undefined,
-      action: "retry"
-    });
-  }
-);
-
 // Ruta para debug de configuración
 app.get('/api/auth/debug', (req, res) => {
   const authHeader = req.get('Authorization');
@@ -685,6 +454,119 @@ app.get("/api/cumple-hoy", (req, res) => {
 
   connection.connect();
 });
+
+// Rutas para Carousel
+app.get("/api/carousel", (req, res) => {
+  const connection = new Connection(dbConfig);
+
+  connection.on("connect", (err) => {
+    if (err) {
+      console.error("❌ Error de conexión:", err.message);
+      return res.status(500).json({ error: "Error de conexión" });
+    }
+
+    const sql = `
+      SELECT Id, Title, Text, Image, CreatedAt
+      FROM Carousel
+      WHERE IsActive = 1
+      ORDER BY CreatedAt DESC
+    `;
+
+    const slides = [];
+
+    const request = new Request(sql, (err) => {
+      connection.close();
+
+      if (err) {
+        console.error("❌ Error en consulta:", err.message);
+        return res.status(500).json({ error: "Error en consulta" });
+      }
+
+      res.json(slides);
+    });
+
+    request.on("row", (columns) => {
+      const slide = {};
+      columns.forEach(col => {
+        slide[col.metadata.colName] = col.value;
+      });
+      slides.push(slide);
+    });
+
+    connection.execSql(request);
+  });
+
+  connection.connect();
+});
+
+
+/* Ruta Carousel POST */
+
+const multer = require('multer');
+const path = require('path');
+
+// Configurar multer para subir archivos
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/') // Asegúrate de que esta carpeta existe
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname))
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// Modificar tu ruta POST
+app.post("/api/carousel", upload.single('image'), (req, res) => {
+  const { title, text } = req.body;
+  const imageFile = req.file;
+
+  if (!title || !imageFile) {
+    return res.status(400).json({ error: "Se requiere título e imagen" });
+  }
+
+  // La URL de la imagen será la ruta del archivo
+  const imageUrl = `/uploads/${imageFile.filename}`;
+
+  const connection = new Connection(dbConfig);
+
+  connection.on("connect", (err) => {
+    if (err) {
+      console.error("❌ Error de conexión:", err.message);
+      return res.status(500).json({ error: "Error de conexión" });
+    }
+
+    const sql = `
+      INSERT INTO Carousel (Title, Text, Image, IsActive)
+      VALUES (@title, @text, @image, 1)
+    `;
+
+    const request = new Request(sql, (err) => {
+      connection.close();
+
+      if (err) {
+        console.error("❌ Error en insert:", err.message);
+        return res.status(500).json({ error: "Error al insertar" });
+      }
+
+      res.json({ success: true, message: "✅ Slide agregado correctamente" });
+    });
+
+    request.addParameter("title", TYPES.NVarChar, title);
+    request.addParameter("text", TYPES.NVarChar, text || null);
+    request.addParameter("image", TYPES.NVarChar, imageUrl);
+
+    connection.execSql(request);
+  });
+
+  connection.connect();
+});
+
+// Servir archivos estáticos
+app.use('/uploads', express.static('uploads'));
+
 
 // Debug de usuarios
 app.get('/api/debug/usuarios', (req, res) => {

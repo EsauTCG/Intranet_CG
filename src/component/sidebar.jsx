@@ -1,4 +1,4 @@
-import { Home, FileText, LogOut, Menu, HatGlasses, Handshake, IdCardLanyard, NotebookPen } from "lucide-react";
+import { Home, FileText, LogOut, Menu, HatGlasses, Handshake, IdCardLanyard, NotebookPen, FileCode } from "lucide-react";
 import "../Style/sidebar.modules.css";
 import Carnes from "../imgs/Carnes G.png";
 import { NavLink } from "react-router-dom";
@@ -8,7 +8,7 @@ import { useAuth } from "../context/context";
 
 export default function Sidebar({ collapsed, setCollapsed }) {
 
-  const { /*isLoggedIn,*/ logout } = useAuth(); // Usar la sesión
+  const { logout, hasArea } = useAuth();
 
   // Enlaces base
   const navItems = [
@@ -27,6 +27,15 @@ export default function Sidebar({ collapsed, setCollapsed }) {
 
   ];
 
+  const areaItems = [];
+  if (hasArea("Marketing") || hasArea("RH")) {
+    areaItems.push({
+      icon: <FileCode size={20} />, // cámbialo por el ícono que prefieras
+      label: "Altas",
+      link: "/altas"
+    });
+  }
+
   return (
     <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
@@ -42,7 +51,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
 
       <nav className="sidebar-nav">
          {/*{[...navItems, ...(isLoggedIn ? privateItems : [])].map((item, i) => (*/}
-         {[...navItems, ...privateItems].map((item, i) => (
+         {[...navItems, ...privateItems, ...areaItems].map((item, i) => (
           <NavLink
             to={item.link}
             key={i}
